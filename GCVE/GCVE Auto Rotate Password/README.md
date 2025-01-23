@@ -1,81 +1,73 @@
-**Automatic Rotation of Built-In Service Account Passwords in GCVE**
---------------------------------------------------------------------
+# Automatic Password Rotation for Built-in GCVE Accounts
 
-This script automates the rotation of CloudOwner and admin service account passwords for GCVE instances in a GCP environment.
+This folder contains a script to automate the rotation of built-in user passwords in Google Cloud VMware Engine (GCVE). The solution is designed to improve security by ensuring that sensitive credentials are updated regularly.
 
-### **Repository Structure**
+## 🛠 Features
 
-The script and this README.md file are located within the Rotate Built-In Service Account Passwords folder inside your repository. This structure helps organize the project and keep it clean.
+- Rotates passwords for:
+  - Default vCenter service account: `CloudOwner@gve.local`
+  - Default NSX-T service account: `admin`
+- Follows the recommended best practices outlined by Google Cloud.
 
-### **Prerequisites**
+## 📋 Requirements
 
-*   A GCP project with billing enabled.
-    
-*   The Google Cloud SDK installed and configured.
-    
-*   A GCVE instance configured in your GCP project.
-    
-*   Basic understanding of Cloud Run, Cloud Scheduler, and IAM roles.
-    
+1. Access to a Google Cloud project with GCVE enabled.
+2. Proper IAM permissions for managing GCVE resources.
+3. A valid service account with the necessary roles.
+4. The GCVE private cloud must already be set up.
 
-### **Installation**
+## 📥 Input Parameters
 
-1.  Bashgit clone https://github.com//.gitcd /Rotate Built-In Service Account PasswordsReplace and with the corresponding information for your GitHub repository.
-    
-2.  Bashgcloud config configurations activategcloud config set project Replace with your GCP project ID.
-    
+The script requires the following input parameters:
 
-### **Usage**
+| Parameter        | Description                                                                 |
+|------------------|-----------------------------------------------------------------------------|
+| `REGION`         | The region where the private cloud is deployed                            |
+| `ZONE`           | The zone where the private cloud is deployed                            |
+| `PROJECT_ID`     | The Google Cloud project ID.                                               |
+| `SERVICE_ACCOUNT`| The name of the service account to execute the solution components.         |
+| `PRIVATE_CLOUD_ID`| The ID of the GCVE private cloud containing the users to be reset.          |
 
-1.  **Update script variables:**Open the gcve-auto-rotate-pwd.sh script and edit the following variables according to your environment:
-    
-    *   REGION: The GCP region where your GCVE instance resides.
-        
-    *   ZONE: The zone within the specified region.
-        
-    *   PROJECT\_ID: Your GCP project ID.
-        
-    *   PRIVATE\_CLOUD\_ID: The ID of your GCVE instance.
-        
-2.  Bashgcloud builds submit -t "gcr.io/${PROJECT\_ID}/gcve-auto-rotate-pwd"
-    
-3.  Bashgcloud beta run jobs create gcve-auto-rotate-pwd \\ --image "gcr.io/${PROJECT\_ID}/gcve-auto-rotate-pwd" \\ --max-retries 5 \\ --service-account "@${PROJECT\_ID}.iam.gserviceaccount.com" \\ --region "${REGION}"Replace with the name of the service account you created for this script.
-    
-4.  Bashgcloud scheduler jobs create http gcve-auto-rotate-pwd \\ --location "${REGION}" \\ --schedule="0 0 \*/30 \* \*" \\ --uri="https://${REGION}-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${PROJECT\_ID}/jobs/gcve-auto-rotate-pwd:run" \\ --http-method POST \\ --oauth-service-account-email "@${PROJECT\_ID}.iam.gserviceaccount.com"
-    
+## 🚀 Deployment Steps
 
-### **Security Considerations**
+1. Navigate to this folder in your local environment or where the script file is saved.
 
-*   **Access control:** Ensure the service account has the minimum necessary permissions.
-    
-*   **Secret management:** Consider using a secret management solution to store credentials securely.
-    
-*   **Regular reviews:** Regularly review the script and configuration to identify potential vulnerabilities.
-    
+2. Set up your environment:
+   - Ensure you have the Google Cloud CLI installed and authenticated.
 
-### **Additional Notes**
+3. Execute the script:
+   ```bash
+   ./gcve-auto-pwd-rotate.sh --region=REGION \
+                             --zone=zone \
+                             --project-id=PROJECT_ID \
+                             --service-account=SERVICE_ACCOUNT \
+                             --private-cloud-id=PRIVATE_CLOUD_ID
+   ```
 
-*   This script is provided for educational purposes and should be adapted to your specific environment.
-    
-*   For more advanced use cases, explore integrating with Cloud Monitoring for logging and error handling.
-    
+4. Verify the password rotation by logging into vCenter and NSX-T with the new credentials.
 
-**Additional Improvements:**
+## 📝 Notes
 
-*   **Folder structure:** The importance of the folder structure for better organization has been emphasized.
-    
-*   **Clarity:** Some explanations have been simplified and additional comments have been added to facilitate understanding.
-    
-*   **Flexibility:** The script can be further customized to fit different needs and environments.
-    
+- **Password Rotation Frequency**: It is recommended to rotate passwords every 60 to 90 days.
+- **Break-glass Access**: The default accounts should only be used for initial configuration and emergency access.
 
-**Next steps:**
+## 📚 Reference
 
-*   **Customization:** Adapt the script to your specific requirements, such as the frequency of password rotation or the inclusion of other types of credentials.
-    
-*   **Integration:** Integrate the script into your CI/CD workflow to further automate the process.
-    
-*   **Monitoring:** Set up alerts in Cloud Monitoring to receive notifications in case of errors or failures.
-    
+Follow the [official GCVE guide](https://cloud.google.com/vmware-engine/docs/vmware-platform/howto-access-management#reset-access-credentials) for detailed steps on resetting credentials manually.
 
-With this improved version, you can effectively implement automatic password rotation for your GCVE instances and maintain the security of your environment.
+## 🛡 Security Considerations
+
+- Ensure the script is executed in a secure environment.
+- Store sensitive parameters (like `SERVICE_ACCOUNT`) in a secure location such as Google Secret Manager.
+
+## 🤝 Contributions
+
+Contributions are welcome! Please submit a pull request or open an issue to share your suggestions.
+
+## 📄 License
+
+This project is licensed under the Apache License 2.0. See the LICENSE file for details.
+
+---
+
+**Happy automating!**
