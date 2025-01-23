@@ -139,6 +139,11 @@ gcloud scheduler jobs create http gcve-auto-rotate-pwd \
   --oauth-service-account-email <SERVICE_ACCOUNT_NAME>@<PROJECT_ID>.iam.gserviceaccount.com
 ```
 
+
+---
+
+Follow the [official GCVE guide](https://cloud.google.com/vmware-engine/docs/vmware-platform/howto-access-management#reset-access-credentials) for detailed steps on resetting credentials manually.
+
 ---
 
 ## License
