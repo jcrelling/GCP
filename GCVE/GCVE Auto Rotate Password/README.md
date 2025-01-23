@@ -30,11 +30,11 @@ cd <repository-folder>
 ```
 2. Make the script executable:
 ```bash
-chmod +x setup_gcve_auto_rotate.sh
+chmod +x gcve-deploy-auto-pwd-rotate.sh
 ```
 3. Run the script and follow the prompts:
 ```bash
-./setup_gcve_auto_rotate.sh
+./gcve-deploy-auto-pwd-rotate.sh
 ```
 
 ---
